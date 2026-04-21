@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ka">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komarovi engineering club</title>
+    <meta name="description" content="აღმოაჩინე და გააზიარე სტუდენტური საინჟინრო პროექტები.">
+    <!-- Using BPG or Noto Sans Georgian for better Georgian typography if possible, but Inter supports basic Georgian too -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=Orbitron:wght@500;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Noto Sans Georgian', 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav-wrapper">
+        <header>
+            <div class="nav-container">
+                <div class="logo">
+                    <img src="logo.png" alt="Komarovi Logo" class="logo-img">
+                    <span class="logo-text">Komarovi Engineering Club</span>
+                </div>
+                <nav>
+                    <button class="nav-link active" data-page="home">მთავარი</button>
+                    <button class="nav-link" data-page="projects">პროექტები</button>
+                    <button class="nav-link" data-page="submit">პროექტის ატვირთვა</button>
+                </nav>
+                <!-- Empty div for flex symmetry -->
+                <div class="nav-placeholder"></div>
+            </div>
+        </header>
+    </div>
+
+    <main>
+        <!-- Homepage View -->
+        <section id="home" class="page-view active">
+            <div class="hero">
+                <div class="hero-bg"></div>
+                <div class="hero-content">
+                    <h1>საინჟინრო კლუბის პროექტები</h1>
+                    <p>მოგესალმებით, თქვენ უკვე კომაროვის ინჟინერიის კლუბის შიდა სამზარეულოში შემოაბიჯეთ.
+                        აქ შეგეძლებათ იხილოთ კომაროვის ინჟინერიის კლუბის მიერ განხორციელებული მრავალი პროექტი თუ
+                        ინიციატივა.</p>
+                    <button class="btn-yellow" data-page="submit" id="hero-submit-btn">ატვირთე პროექტი</button>
+                </div>
+
+                <!-- Mock Decorative Elements -->
+                <div class="decoration dec-left">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20,80 L40,50 L30,40 L60,20" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="decoration dec-right">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="50" cy="50" r="20" />
+                        <path d="M10,10 L35,35 M90,10 L65,35 M10,90 L35,65 M90,90 L65,65" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="decoration dec-bottom">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="30" y="50" width="40" height="50" rx="4" />
+                        <path d="M40,50 L40,30 A10,10 0 0,1 60,30 L60,50" stroke-linecap="round" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="gallery-container" id="projects-section">
+                <div class="section-header">
+                    <h2>ბოლო პროექტები
+                        <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </h2>
+                </div>
+
+                <div class="project-grid" id="project-grid">
+                    <!-- Cards injected by JS -->
+                </div>
+
+                <div class="view-more-container">
+                    <button class="btn-blue-outline">მეტის ნახვა</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Submit Page View -->
+        <section id="submit" class="page-view">
+            <div class="page-container">
+                <div class="form-card">
+                    <h2>პროექტის ატვირთვა</h2>
+                    <p class="form-note">გაუზიარე შენი საინჟინრო ნამუშევარი კლუბს.</p>
+                    <form id="submit-form" onsubmit="event.preventDefault();">
+                        <div class="form-group">
+                            <label for="project-title">პროექტის სახელი</label>
+                            <input type="text" id="project-title" placeholder="შეიყვანეთ პროექტის სახელი" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-desc">მოკლე აღწერა</label>
+                            <textarea id="project-desc" rows="3" placeholder="აღწერეთ თქვენი პროექტი"
+                                required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-members">გუნდის წევრები</label>
+                            <input type="text" id="project-members" placeholder="მაგ. გიორგი, მარიამი" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-link">YouTube ლინკი ან სურათის URL</label>
+                            <input type="url" id="project-link"
+                                placeholder="https://youtube.com/watch?v=... ან სურათის ლინკი" required>
+                            <div id="image-preview-container"
+                                style="display: none; margin-top: 1rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color);">
+                                <img id="image-preview-img" src="" alt="პრევიუ" style="width: 100%; display: block;">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-yellow w-full">პროექტის გამოქვეყნება</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <!-- Admin Dashboard View -->
+        <section id="admin" class="page-view">
+            <div class="page-container">
+                <div class="section-header">
+                    <h2>ადმინისტრატორის პანელი (Admin)</h2>
+                </div>
+                
+                <div id="admin-login" style="text-align: center; margin-bottom: 2rem; background: var(--bg-white); padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">პანელში შესასვლელად შეიყვანეთ პაროლი</p>
+                    <input type="password" id="admin-passcode-input" placeholder="პაროლი..." style="padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 1rem; width: 100%; max-width: 300px;">
+                    <br>
+                    <button class="btn-yellow" id="admin-login-btn" style="padding: 0.75rem 2rem;">შესვლა</button>
+                    <p id="admin-error" style="color: #ef4444; margin-top: 1rem; display: none;">არასწორი პაროლი</p>
+                </div>
+
+                <div id="admin-content" style="display: none;">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--text-primary);">დასამტკიცებელი პროექტები</h3>
+                    <div class="project-grid" id="pending-project-grid">
+                        <!-- Pending cards injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <!-- მენტორის სექცია -->
+            <div class="footer-mentor">
+                <img src="mentor.jpg" alt="მარეხ მაზანიშვილი" class="mentor-photo"
+                    onerror="this.src='https://ui-avatars.com/api/?name=Marekh+M&background=1e3a8a&color=fff&size=100'">
+                <div class="mentor-info">
+                    <h4>მარეხ მაზანიშვილი</h4>
+                    <p class="mentor-title">ჩვენი წრის მენტორი</p>
+                    <p class="mentor-desc">STEM მიმართულების საგნობრივი ექსპერტი</p>
+                </div>
+            </div>
+
+            <!-- საკონტაქტო სექცია -->
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p>Vladimir Komarov Tbilisi School of Physics and Mathematics N199</p>
+                <p>Tbilisi, Vazha-Pshavela N49</p>
+                <p>📞 (+995) 0322 39 15 62</p>
+                <p>✉️ E-mail: tbilisi199@mes.gov.ge</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
