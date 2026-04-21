@@ -60,6 +60,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return url; // Assume it's a direct image link if not YouTube
     }
 
+    // Helper to generate HTML for the card media (Image, Video, or YouTube)
+    function getMediaHTML(url, title) {
+        if (!url || !url.startsWith('http')) {
+            return `<img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" alt="${title}">`;
+        }
+        
+        const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+        if (ytMatch && ytMatch[1]) {
+            return `<iframe src="https://www.youtube.com/embed/${ytMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5;"></iframe>`;
+        }
+        
+        if (url.match(/\.(mp4|webm|ogg)$/i)) {
+            return `<video src="${url}" controls style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5;"></video>`;
+        }
+        
+        return `<img src="${url}" alt="${title}" onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80'">`;
+    }
+
     // Live Image Preview Logic
     const linkInput = document.getElementById('project-link');
     const previewContainer = document.getElementById('image-preview-container');
@@ -149,31 +167,30 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'project-card';
             card.style.position = 'relative'; // For absolute positioning of delete button
             
-            // Try to open link if valid URL
-            card.onclick = () => {
-                try {
-                    new URL(project.image);
-                    window.open(project.image, '_blank');
-                } catch(e) {
-                    console.log('Not a valid URL, cannot open');
-                }
-            };
+            // Try to open link if valid URL and it's not a video
+            const isVideo = project.image && (project.image.match(/(?:youtube\.com|youtu\.be)/i) || project.image.match(/\.(mp4|webm|ogg)$/i));
+            
+            if (!isVideo) {
+                card.onclick = () => {
+                    try {
+                        new URL(project.image);
+                        window.open(project.image, '_blank');
+                    } catch(e) {
+                        console.log('Not a valid URL, cannot open');
+                    }
+                };
+            }
 
             const authorInitials = project.author && project.author.length >= 2 
                 ? project.author.substring(0, 2).toUpperCase() 
                 : 'U';
             
             const dateStr = new Date(project.createdAt).toLocaleDateString('ka-GE');
-            
-            let imageSource = getImageUrl(project.image);
-            if (!imageSource || !imageSource.startsWith('http')) {
-                 imageSource = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80";
-            }
 
             card.innerHTML = `
                 ${window.adminPasscode ? `<button class="delete-btn" onclick="deleteProject('${project.id}', event)" title="წაშლა" style="position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 32px; height: 32px; color: #ef4444; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10; transition: all 0.2s;">🗑</button>` : ''}
                 <div class="card-image-wrapper">
-                    <img src="${imageSource}" alt="${project.title}" onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80'">
+                    ${getMediaHTML(project.image, project.title)}
                 </div>
                 <div class="card-content">
                     <h3 class="card-title">${project.title}</h3>
@@ -332,16 +349,13 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'project-card';
             card.style.position = 'relative';
             
-            let imageSource = getImageUrl(project.image);
-            if (!imageSource || !imageSource.startsWith('http')) imageSource = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80";
-
             card.innerHTML = `
                 <div style="position: absolute; top: 12px; right: 12px; z-index: 10; display: flex; gap: 8px;">
                     <button onclick="approveProject('${project.id}', event)" title="დამტკიცება" style="background: #22c55e; border: none; border-radius: 50%; width: 32px; height: 32px; color: white; font-weight: bold; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">✓</button>
                     <button onclick="deleteProject('${project.id}', event)" title="წაშლა" style="background: #ef4444; border: none; border-radius: 50%; width: 32px; height: 32px; color: white; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">🗑</button>
                 </div>
                 <div class="card-image-wrapper">
-                    <img src="${imageSource}" alt="${project.title}">
+                    ${getMediaHTML(project.image, project.title)}
                 </div>
                 <div class="card-content">
                     <h3 class="card-title">${project.title}</h3>
